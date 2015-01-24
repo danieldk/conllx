@@ -1,4 +1,4 @@
-package conll
+package conllx
 
 import (
 	"bufio"
@@ -7,16 +7,20 @@ import (
 	"strings"
 )
 
-type CONLLReader struct {
+// A reader for CONLL-X files.
+type Reader struct {
 	reader *bufio.Reader
 	eof    bool
 }
 
-func NewCONLLReader(r *bufio.Reader) CONLLReader {
-	return CONLLReader{r, false}
+// Create a new reader from a buffered I/O reader.
+func NewReader(r *bufio.Reader) Reader {
+	return Reader{r, false}
 }
 
-func (r *CONLLReader) ReadSentence() (sentence []Token, err error) {
+// Read a sentence from the reader. If there is no more
+// data that can be read, io.EOF is returned as the error.
+func (r *Reader) ReadSentence() (sentence []Token, err error) {
 	tokens := make([]Token, 0)
 
 	if r.eof {

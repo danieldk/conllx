@@ -1,4 +1,8 @@
-package conll
+// The conllx package provides a reader (and soon writer)
+// for the CoNNL-X format:
+//
+// http://ilk.uvt.nl/conll/
+package conllx
 
 const formBit = uint32(1 << 1)
 const lemmaBit = uint32(1 << 2)
@@ -10,6 +14,7 @@ const headRelBit = uint32(1 << 7)
 const pHeadBit = uint32(1 << 8)
 const pHeadRelBit = uint32(1 << 9)
 
+// A CONLL-X token
 type Token struct {
 	available    uint32
 	form         string

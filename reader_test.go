@@ -1,4 +1,4 @@
-package conll
+package conllx
 
 import (
 	"bufio"
@@ -80,7 +80,7 @@ func TestCorrectMarkedEmpty(t *testing.T) {
 	testHelper(t, testFragmentMarkedEmpty)
 }
 
-func stringReader(s string) CONLLReader {
+func stringReader(s string) Reader {
 	reader := strings.NewReader(s)
-	return NewCONLLReader(bufio.NewReader(reader))
+	return NewReader(bufio.NewReader(reader))
 }
