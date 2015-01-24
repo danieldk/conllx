@@ -1,5 +1,7 @@
 ## Introduction
 
+[![GoDoc](https://godoc.org/github.com/danieldk/conllx?status.svg)](https://godoc.org/github.com/danieldk/conllx)
+
 This is a package for reading (and soon writing) CONLL-X files in Go.
 
 **Note:** This package is still new, its API may change.
