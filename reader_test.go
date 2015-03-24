@@ -67,7 +67,6 @@ func testHelper(t *testing.T, sentenceString string) {
 	}
 }
 
-
 func TestCorrect(t *testing.T) {
 	testHelper(t, testFragment)
 }
@@ -78,6 +77,18 @@ func TestCorrectRobust(t *testing.T) {
 
 func TestCorrectMarkedEmpty(t *testing.T) {
 	testHelper(t, testFragmentMarkedEmpty)
+}
+
+func TestEmpty(t *testing.T) {
+	r := stringReader("")
+	if _, err := r.ReadSentence(); err != io.EOF {
+		t.Fatal("Parsing the empty string should return EOF")
+	}
+
+	r = stringReader("\n\n\n\n")
+	if _, err := r.ReadSentence(); err != io.EOF {
+		t.Fatal("Parsing the empty string should return EOF")
+	}
 }
 
 func stringReader(s string) Reader {

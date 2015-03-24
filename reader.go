@@ -9,13 +9,18 @@ import (
 
 // A reader for CONLL-X files.
 type Reader struct {
-	reader *bufio.Reader
-	eof    bool
+	scanner *bufio.Scanner
+	eof     bool
 }
 
 // Create a new reader from a buffered I/O reader.
 func NewReader(r *bufio.Reader) Reader {
-	return Reader{r, false}
+	scanner := bufio.NewScanner(r)
+	scanner.Split(bufio.ScanLines)
+	return Reader{
+		scanner: scanner,
+		eof:     false,
+	}
 }
 
 // Read a sentence from the reader. If there is no more
@@ -27,19 +32,8 @@ func (r *Reader) ReadSentence() (sentence []Token, err error) {
 		return nil, io.EOF
 	}
 
-	for !r.eof {
-		line, err := r.reader.ReadString('\n')
-
-		// If we have an error and it is EOF, we still want to process
-		// the last line.
-		if err != nil {
-			if err == io.EOF {
-				r.eof = true
-			} else {
-				return nil, err
-			}
-		}
-
+	for r.scanner.Scan() {
+		line := r.scanner.Text()
 		line = strings.TrimSpace(line)
 
 		if len(line) == 0 {
@@ -51,13 +45,20 @@ func (r *Reader) ReadSentence() (sentence []Token, err error) {
 		}
 
 		parts := strings.Split(line, "\t")
-
 		token, err := processToken(parts)
 		if err != nil {
 			return nil, err
 		}
 
 		tokens = append(tokens, token)
+	}
+
+	if r.scanner.Err() == io.EOF {
+		r.eof = true
+	}
+
+	if len(tokens) == 0 {
+		return nil, io.EOF
 	}
 
 	return tokens, nil
