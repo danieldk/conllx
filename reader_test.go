@@ -12,7 +12,7 @@ const testFragment string = `1	Die	die	ART	ART	nsf	2	DET
 2	Großaufnahme	Großaufnahme	N	NN	nsf	0	ROOT
 
 1	Gilles	Gilles	N	NE	nsm	0	ROOT
-2	Deleuze	Deleuze	N	NE	nsm	1	APP`
+2	Deleuze	Deleuze	N	NE	case:nominative|number:singular|gender:masculine	1	APP`
 
 // Not according to CoNLL-X, but we want to handle it anyway.
 const testFragmentRobust string = `1	Die	die	ART	ART	nsf	2	DET
@@ -20,22 +20,33 @@ const testFragmentRobust string = `1	Die	die	ART	ART	nsf	2	DET
 
 
 1	Gilles	Gilles	N	NE	nsm	0	ROOT
-2	Deleuze	Deleuze	N	NE	nsm	1	APP`
+2	Deleuze	Deleuze	N	NE	case:nominative|number:singular|gender:masculine	1	APP`
 
 const testFragmentMarkedEmpty string = `1	Die	die	ART	ART	nsf	2	DET	_	_
 2	Großaufnahme	Großaufnahme	N	NN	nsf	0	ROOT	_	_
 
 1	Gilles	Gilles	N	NE	nsm	0	ROOT	_	_
-2	Deleuze	Deleuze	N	NE	nsm	1	APP	_	_`
+2	Deleuze	Deleuze	N	NE	case:nominative|number:singular|gender:masculine	1	APP	_	_`
 
 var testFragmentSent1 []Token = []Token{
-	Token{0xFE, "Die", "die", "ART", "ART", "nsf", 2, "DET", 0, ""},
-	Token{0xFE, "Großaufnahme", "Großaufnahme", "N", "NN", "nsf", 0, "ROOT", 0, ""},
+	Token{0xFE, "Die", "die", "ART", "ART", "nsf", nil, 2, "DET", 0, ""},
+	Token{0xFE, "Großaufnahme", "Großaufnahme", "N", "NN", "nsf", nil, 0, "ROOT", 0, ""},
 }
 
 var testFragmentSent2 []Token = []Token{
-	Token{0xFE, "Gilles", "Gilles", "N", "NE", "nsm", 0, "ROOT", 0, ""},
-	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", "nsm", 1, "APP", 0, ""},
+	Token{0xFE, "Gilles", "Gilles", "N", "NE", "nsm", nil, 0, "ROOT", 0, ""},
+	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", "case:nominative|number:singular|gender:masculine", nil, 1, "APP", 0, ""},
+}
+
+var token2Features = map[string]string{
+	"case":   "nominative",
+	"number": "singular",
+	"gender": "masculine",
+}
+
+var testFragmentSent2Features []Token = []Token{
+	Token{0xFE, "Gilles", "Gilles", "N", "NE", "nsm", nil, 0, "ROOT", 0, ""},
+	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", "case:nominative|number:singular|gender:masculine", token2Features, 1, "APP", 0, ""},
 }
 
 func equalOrFail(t *testing.T, correct, test []Token) {
@@ -60,6 +71,9 @@ func testHelper(t *testing.T, sentenceString string) {
 	}
 
 	equalOrFail(t, testFragmentSent2, sentence2)
+
+	sentence2[1].FeaturesMap()
+	equalOrFail(t, testFragmentSent2Features, sentence2)
 
 	_, err = r.ReadSentence()
 	if err != io.EOF {

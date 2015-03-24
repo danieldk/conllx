@@ -4,6 +4,8 @@
 // http://ilk.uvt.nl/conll/
 package conllx
 
+import "strings"
+
 const formBit = uint32(1 << 1)
 const lemmaBit = uint32(1 << 2)
 const coarsePosTagBit = uint32(1 << 3)
@@ -16,16 +18,17 @@ const pHeadRelBit = uint32(1 << 9)
 
 // A CONLL-X token
 type Token struct {
-	available    uint32
-	form         string
-	lemma        string
-	coarsePosTag string
-	posTag       string
-	features     string
-	head         uint
-	headRel      string
-	pHead        uint
-	pHeadRel     string
+	available        uint32
+	form             string
+	lemma            string
+	coarsePosTag     string
+	posTag           string
+	features         string
+	splittedFeatures map[string]string
+	head             uint
+	headRel          string
+	pHead            uint
+	pHeadRel         string
 }
 
 // Get the form, the second tuple element is false if there
@@ -54,8 +57,30 @@ func (t *Token) PosTag() (string, bool) {
 
 // Get the features field, the second tuple element is
 // false if there are no features stored in this token.
-func (t *Token) Features() (string, bool) {
+func (t *Token) FeaturesString() (string, bool) {
 	return t.features, t.available&featuresBit != 0
+}
+
+// Get the features field as a map, the second tuple element is
+// false if there are no features stored in this token.
+//
+// The map is constructed lazily - the features string is only
+// parsed on the first call of this method.
+func (t *Token) FeaturesMap() (map[string]string, bool) {
+	if t.splittedFeatures != nil || t.available&featuresBit == 0 {
+		return t.splittedFeatures, t.available&featuresBit != 0
+	}
+
+	featuresMap := make(map[string]string)
+	for _, av := range strings.Split(t.features, "|") {
+		if sepIdx := strings.IndexByte(av, ':'); sepIdx != -1 {
+			featuresMap[av[:sepIdx]] = av[sepIdx+1:]
+		}
+	}
+
+	t.splittedFeatures = featuresMap
+
+	return t.splittedFeatures, true
 }
 
 // Get the head field, the second tuple element is

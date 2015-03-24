@@ -86,15 +86,16 @@ func processToken(columns []string) (Token, error) {
 	return Token{
 		available: formBit | lemmaBit | cTagBit | tagBit | featuresBit |
 			headBit | headRelBit | pHeadBit | pHeadRelBit,
-		form:         form,
-		lemma:        lemma,
-		coarsePosTag: cTag,
-		posTag:       tag,
-		features:     features,
-		head:         head,
-		headRel:      headRel,
-		pHead:        pHead,
-		pHeadRel:     pHeadRel,
+		form:             form,
+		lemma:            lemma,
+		coarsePosTag:     cTag,
+		posTag:           tag,
+		features:         features,
+		splittedFeatures: nil,
+		head:             head,
+		headRel:          headRel,
+		pHead:            pHead,
+		pHeadRel:         pHeadRel,
 	}, nil
 }
 
