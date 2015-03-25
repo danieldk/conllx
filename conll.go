@@ -16,19 +16,56 @@ const headRelBit = uint32(1 << 7)
 const pHeadBit = uint32(1 << 8)
 const pHeadRelBit = uint32(1 << 9)
 
+// Features from the CONLL-X features field.
+type Features struct {
+	featuresString string
+	featuresMap    map[string]string
+}
+
+// Construct a new features field from a features string.
+func newFeatures(featuresString string) *Features {
+	return &Features{
+		featuresString: featuresString,
+		featuresMap:    nil,
+	}
+}
+
+// Get the features as a string. This will give feature in
+// exactly the same format as the original CONLL-X data.
+func (f *Features) FeaturesString() string {
+	return f.featuresString
+}
+
+// Get the features as a key-value mapping. Features that do
+// not follow the expected format are skipped.
+//
+// The feature map is lazily initialized on its first call. No
+// feature field parsing is done if this method is not called.
+func (f *Features) FeaturesMap() map[string]string {
+	if f.featuresMap == nil {
+		f.featuresMap = make(map[string]string)
+		for _, av := range strings.Split(f.featuresString, "|") {
+			if sepIdx := strings.IndexByte(av, ':'); sepIdx != -1 {
+				f.featuresMap[av[:sepIdx]] = av[sepIdx+1:]
+			}
+		}
+	}
+
+	return f.featuresMap
+}
+
 // A CONLL-X token
 type Token struct {
-	available        uint32
-	form             string
-	lemma            string
-	coarsePosTag     string
-	posTag           string
-	features         string
-	splittedFeatures map[string]string
-	head             uint
-	headRel          string
-	pHead            uint
-	pHeadRel         string
+	available    uint32
+	form         string
+	lemma        string
+	coarsePosTag string
+	posTag       string
+	features     *Features
+	head         uint
+	headRel      string
+	pHead        uint
+	pHeadRel     string
 }
 
 // Get the form, the second tuple element is false if there
@@ -57,30 +94,8 @@ func (t *Token) PosTag() (string, bool) {
 
 // Get the features field, the second tuple element is
 // false if there are no features stored in this token.
-func (t *Token) FeaturesString() (string, bool) {
+func (t *Token) Features() (*Features, bool) {
 	return t.features, t.available&featuresBit != 0
-}
-
-// Get the features field as a map, the second tuple element is
-// false if there are no features stored in this token.
-//
-// The map is constructed lazily - the features string is only
-// parsed on the first call of this method.
-func (t *Token) FeaturesMap() (map[string]string, bool) {
-	if t.splittedFeatures != nil || t.available&featuresBit == 0 {
-		return t.splittedFeatures, t.available&featuresBit != 0
-	}
-
-	featuresMap := make(map[string]string)
-	for _, av := range strings.Split(t.features, "|") {
-		if sepIdx := strings.IndexByte(av, ':'); sepIdx != -1 {
-			featuresMap[av[:sepIdx]] = av[sepIdx+1:]
-		}
-	}
-
-	t.splittedFeatures = featuresMap
-
-	return t.splittedFeatures, true
 }
 
 // Get the head field, the second tuple element is

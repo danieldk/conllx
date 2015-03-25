@@ -29,13 +29,13 @@ const testFragmentMarkedEmpty string = `1	Die	die	ART	ART	nsf	2	DET	_	_
 2	Deleuze	Deleuze	N	NE	case:nominative|number:singular|gender:masculine	1	APP	_	_`
 
 var testFragmentSent1 []Token = []Token{
-	Token{0xFE, "Die", "die", "ART", "ART", "nsf", nil, 2, "DET", 0, ""},
-	Token{0xFE, "Großaufnahme", "Großaufnahme", "N", "NN", "nsf", nil, 0, "ROOT", 0, ""},
+	Token{0xFE, "Die", "die", "ART", "ART", &Features{"nsf", nil}, 2, "DET", 0, ""},
+	Token{0xFE, "Großaufnahme", "Großaufnahme", "N", "NN", &Features{"nsf", nil}, 0, "ROOT", 0, ""},
 }
 
 var testFragmentSent2 []Token = []Token{
-	Token{0xFE, "Gilles", "Gilles", "N", "NE", "nsm", nil, 0, "ROOT", 0, ""},
-	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", "case:nominative|number:singular|gender:masculine", nil, 1, "APP", 0, ""},
+	Token{0xFE, "Gilles", "Gilles", "N", "NE", &Features{"nsm", nil}, 0, "ROOT", 0, ""},
+	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", &Features{"case:nominative|number:singular|gender:masculine", nil}, 1, "APP", 0, ""},
 }
 
 var token2Features = map[string]string{
@@ -45,8 +45,8 @@ var token2Features = map[string]string{
 }
 
 var testFragmentSent2Features []Token = []Token{
-	Token{0xFE, "Gilles", "Gilles", "N", "NE", "nsm", nil, 0, "ROOT", 0, ""},
-	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", "case:nominative|number:singular|gender:masculine", token2Features, 1, "APP", 0, ""},
+	Token{0xFE, "Gilles", "Gilles", "N", "NE", &Features{"nsm", nil}, 0, "ROOT", 0, ""},
+	Token{0xFE, "Deleuze", "Deleuze", "N", "NE", &Features{"case:nominative|number:singular|gender:masculine", token2Features}, 1, "APP", 0, ""},
 }
 
 func equalOrFail(t *testing.T, correct, test []Token) {
@@ -72,7 +72,11 @@ func testHelper(t *testing.T, sentenceString string) {
 
 	equalOrFail(t, testFragmentSent2, sentence2)
 
-	sentence2[1].FeaturesMap()
+	features, ok := sentence2[1].Features()
+	if !ok {
+		t.Fatalf("Sentence should have features.")
+	}
+	features.FeaturesMap()
 	equalOrFail(t, testFragmentSent2Features, sentence2)
 
 	_, err = r.ReadSentence()
