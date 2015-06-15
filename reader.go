@@ -100,17 +100,17 @@ func processToken(columns []string) (Token, error) {
 
 // Return the value for a column, returns the corresponding bit
 // set to one if the value was actually present.
-func valueForColumn(columns []string, idx int) (string, uint32) {
+func valueForColumn(columns []string, idx int) (string, fields) {
 	if idx >= len(columns) || columns[idx] == "_" {
 		return "", 0
 	}
 
-	return columns[idx], uint32(1) << uint32(idx)
+	return columns[idx], fields(1) << fields(idx-1)
 }
 
 // Return the value for a column, returns the corresponding bit
 // set to one if the value was actually present.
-func intValueForColumn(columns []string, idx int) (uint, uint32, error) {
+func intValueForColumn(columns []string, idx int) (uint, fields, error) {
 	if idx >= len(columns) || columns[idx] == "_" {
 		return 0, 0, nil
 	}
@@ -120,5 +120,5 @@ func intValueForColumn(columns []string, idx int) (uint, uint32, error) {
 		return 0, 0, err
 	}
 
-	return uint(val), uint32(1) << uint32(idx), nil
+	return uint(val), fields(1) << fields(idx-1), nil
 }

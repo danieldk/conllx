@@ -6,15 +6,19 @@ package conllx
 
 import "strings"
 
-const formBit = uint32(1 << 1)
-const lemmaBit = uint32(1 << 2)
-const coarsePosTagBit = uint32(1 << 3)
-const posTagBit = uint32(1 << 4)
-const featuresBit = uint32(1 << 5)
-const headBit = uint32(1 << 6)
-const headRelBit = uint32(1 << 7)
-const pHeadBit = uint32(1 << 8)
-const pHeadRelBit = uint32(1 << 9)
+type fields uint32
+
+const (
+	formBit fields = 1 << iota
+	lemmaBit
+	coarsePosTagBit
+	posTagBit
+	featuresBit
+	headBit
+	headRelBit
+	pHeadBit
+	pHeadRelBit
+)
 
 // Features from the CONLL-X features field.
 type Features struct {
@@ -56,7 +60,7 @@ func (f *Features) FeaturesMap() map[string]string {
 
 // A CONLL-X token
 type Token struct {
-	available    uint32
+	available    fields
 	form         string
 	lemma        string
 	coarsePosTag string
@@ -86,7 +90,7 @@ func (t *Token) CoarsePosTag() (string, bool) {
 	return t.coarsePosTag, t.available&coarsePosTagBit != 0
 }
 
-// Get the coarse-grained POS tag, the second tuple element is
+// Get the fine-grained POS tag, the second tuple element is
 // false if there is no tag stored in this token.
 func (t *Token) PosTag() (string, bool) {
 	return t.posTag, t.available&posTagBit != 0
@@ -120,4 +124,52 @@ func (t *Token) PHead() (uint, bool) {
 // false if there is no head relation stored in this token.
 func (t *Token) PHeadRel() (string, bool) {
 	return t.pHeadRel, t.available&pHeadRelBit != 0
+}
+
+// Set the form field.
+func (t *Token) SetForm(form string) {
+	t.form = form
+	t.available |= formBit
+}
+
+// Set the lemma field.
+func (t *Token) SetLemma(lemma string) {
+	t.lemma = lemma
+	t.available |= lemmaBit
+}
+
+// Set the coarse-grained POS tag field.
+func (t *Token) SetCoarsePosTag(coarsePosTag string) {
+	t.coarsePosTag = coarsePosTag
+	t.available |= coarsePosTagBit
+}
+
+// Set the POS tag field.
+func (t *Token) SetPosTag(posTag string) {
+	t.posTag = posTag
+	t.available |= posTagBit
+}
+
+// Set the head field.
+func (t *Token) SetHead(head uint) {
+	t.head = head
+	t.available |= headBit
+}
+
+// Set the head relation.
+func (t *Token) SetHeadRel(rel string) {
+	t.headRel = rel
+	t.available |= headRelBit
+}
+
+// Set the projective head field.
+func (t *Token) SetPHead(head uint) {
+	t.pHead = head
+	t.available |= pHeadBit
+}
+
+// Set the projective head relation field.
+func (t *Token) SetPHeadRel(rel string) {
+	t.pHeadRel = rel
+	t.available |= pHeadRelBit
 }
