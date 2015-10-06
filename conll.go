@@ -127,49 +127,57 @@ func (t *Token) PHeadRel() (string, bool) {
 }
 
 // Set the form field.
-func (t *Token) SetForm(form string) {
+func (t *Token) SetForm(form string) *Token {
 	t.form = form
 	t.available |= formBit
+	return t
 }
 
 // Set the lemma field.
-func (t *Token) SetLemma(lemma string) {
+func (t *Token) SetLemma(lemma string) *Token {
 	t.lemma = lemma
 	t.available |= lemmaBit
+	return t
 }
 
 // Set the coarse-grained POS tag field.
-func (t *Token) SetCoarsePosTag(coarsePosTag string) {
+func (t *Token) SetCoarsePosTag(coarsePosTag string) *Token {
 	t.coarsePosTag = coarsePosTag
 	t.available |= coarsePosTagBit
+	return t
 }
 
 // Set the POS tag field.
-func (t *Token) SetPosTag(posTag string) {
+func (t *Token) SetPosTag(posTag string) *Token {
 	t.posTag = posTag
 	t.available |= posTagBit
+	return t
 }
 
 // Set the head field.
-func (t *Token) SetHead(head uint) {
+func (t *Token) SetHead(head uint) *Token {
 	t.head = head
 	t.available |= headBit
+	return t
 }
 
 // Set the head relation.
-func (t *Token) SetHeadRel(rel string) {
+func (t *Token) SetHeadRel(rel string) *Token {
 	t.headRel = rel
 	t.available |= headRelBit
+	return t
 }
 
 // Set the projective head field.
-func (t *Token) SetPHead(head uint) {
+func (t *Token) SetPHead(head uint) *Token {
 	t.pHead = head
 	t.available |= pHeadBit
+	return t
 }
 
 // Set the projective head relation field.
-func (t *Token) SetPHeadRel(rel string) {
+func (t *Token) SetPHeadRel(rel string) *Token {
 	t.pHeadRel = rel
 	t.available |= pHeadRelBit
+	return t
 }
