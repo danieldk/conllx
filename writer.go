@@ -11,6 +11,7 @@ type Writer struct {
 	first         bool
 	writer        io.Writer
 	projectivizer Projectivizer
+	direction     ProjectivizeDirection
 }
 
 // Create a new writer.
@@ -23,8 +24,9 @@ func NewWriter(w io.Writer) Writer {
 }
 
 // Set a projectivizer to deprojectivize dependency structures.
-func (w *Writer) SetProjectivizer(projectivizer Projectivizer) {
+func (w *Writer) SetProjectivizer(projectivizer Projectivizer, direction ProjectivizeDirection) {
 	w.projectivizer = projectivizer
+	w.direction = direction
 }
 
 func (w *Writer) WriteSentence(sentence []Token) error {
@@ -42,7 +44,14 @@ func (w *Writer) WriteSentence(sentence []Token) error {
 	sentenceLen := len(sentence)
 
 	if w.projectivizer != nil {
-		sentence = w.projectivizer.Deprojectivize(sentence)
+		switch w.direction {
+		case Projectivize:
+			sentence = w.projectivizer.Projectivize(sentence)
+		case Deprojectivize:
+			sentence = w.projectivizer.Deprojectivize(sentence)
+		default:
+			panic("Unknown projectivization direction.")
+		}
 	}
 
 	for idx, token := range sentence {

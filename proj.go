@@ -6,6 +6,14 @@ import (
 	"strings"
 )
 
+// Projectivization direction.
+type ProjectivizeDirection int
+
+const (
+	Projectivize ProjectivizeDirection = iota
+	Deprojectivize
+)
+
 // A projectivizer can transform a dependency structure in one that has
 // no non-projective edges. Moreover, it can reverse this transformation.
 type Projectivizer interface {

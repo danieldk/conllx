@@ -12,6 +12,7 @@ type Reader struct {
 	scanner       *bufio.Scanner
 	eof           bool
 	projectivizer Projectivizer
+	direction     ProjectivizeDirection
 }
 
 // Create a new reader from a buffered I/O reader.
@@ -64,15 +65,23 @@ func (r *Reader) ReadSentence() (sentence []Token, err error) {
 	}
 
 	if r.projectivizer != nil {
-		return r.projectivizer.Projectivize(tokens), nil
+		switch r.direction {
+		case Projectivize:
+			return r.projectivizer.Projectivize(tokens), nil
+		case Deprojectivize:
+			return r.projectivizer.Deprojectivize(tokens), nil
+		default:
+			panic("Unknown projectivization direction.")
+		}
 	}
 
 	return tokens, nil
 }
 
-// Set a projectivizer to projectivize dependency structures.
-func (r *Reader) SetProjectivizer(projectivizer Projectivizer) {
+// Set a projectivizer to (de-)projectivize dependency structures.
+func (r *Reader) SetProjectivizer(projectivizer Projectivizer, direction ProjectivizeDirection) {
 	r.projectivizer = projectivizer
+	r.direction = direction
 }
 
 func processToken(columns []string) (Token, error) {

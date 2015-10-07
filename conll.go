@@ -1,5 +1,5 @@
-// The conllx package provides a reader (and soon writer)
-// for the CoNNL-X format:
+// The conllx package provides a reader and writer for the
+// CoNNL-X format:
 //
 // http://ilk.uvt.nl/conll/
 package conllx
