@@ -9,8 +9,9 @@ import (
 
 // A reader for CONLL-X files.
 type Reader struct {
-	scanner *bufio.Scanner
-	eof     bool
+	scanner       *bufio.Scanner
+	eof           bool
+	projectivizer Projectivizer
 }
 
 // Create a new reader from a buffered I/O reader.
@@ -18,8 +19,9 @@ func NewReader(r *bufio.Reader) Reader {
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
 	return Reader{
-		scanner: scanner,
-		eof:     false,
+		scanner:       scanner,
+		eof:           false,
+		projectivizer: nil,
 	}
 }
 
@@ -61,7 +63,16 @@ func (r *Reader) ReadSentence() (sentence []Token, err error) {
 		return nil, io.EOF
 	}
 
+	if r.projectivizer != nil {
+		return r.projectivizer.Projectivize(tokens), nil
+	}
+
 	return tokens, nil
+}
+
+// Set a projectivizer to projectivize dependency structures.
+func (r *Reader) SetProjectivizer(projectivizer Projectivizer) {
+	r.projectivizer = projectivizer
 }
 
 func processToken(columns []string) (Token, error) {

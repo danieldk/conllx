@@ -8,16 +8,23 @@ import (
 )
 
 type Writer struct {
-	first  bool
-	writer io.Writer
+	first         bool
+	writer        io.Writer
+	projectivizer Projectivizer
 }
 
 // Create a new writer.
 func NewWriter(w io.Writer) Writer {
 	return Writer{
-		first:  true,
-		writer: w,
+		first:         true,
+		writer:        w,
+		projectivizer: nil,
 	}
+}
+
+// Set a projectivizer to deprojectivize dependency structures.
+func (w *Writer) SetProjectivizer(projectivizer Projectivizer) {
+	w.projectivizer = projectivizer
 }
 
 func (w *Writer) WriteSentence(sentence []Token) error {
@@ -33,6 +40,10 @@ func (w *Writer) WriteSentence(sentence []Token) error {
 	}
 
 	sentenceLen := len(sentence)
+
+	if w.projectivizer != nil {
+		sentence = w.projectivizer.Deprojectivize(sentence)
+	}
 
 	for idx, token := range sentence {
 		if idx == sentenceLen-1 {
