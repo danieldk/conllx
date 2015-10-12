@@ -4,7 +4,10 @@
 // http://ilk.uvt.nl/conll/
 package conllx
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type fields uint32
 
@@ -124,6 +127,22 @@ func (t *Token) PHead() (uint, bool) {
 // false if there is no head relation stored in this token.
 func (t *Token) PHeadRel() (string, bool) {
 	return t.pHeadRel, t.available&pHeadRelBit != 0
+}
+
+// Set the features for this token.
+func (t *Token) SetFeatures(features map[string]string) {
+	f := new(Features)
+	f.featuresMap = features
+
+	fVals := make([]string, 0, len(features))
+	for k, v := range features {
+		fVals = append(fVals, fmt.Sprintf("%s:%s", k, v))
+	}
+
+	f.featuresString = strings.Join(fVals, "|")
+
+	t.features = f
+	t.available |= featuresBit
 }
 
 // Set the form field.
