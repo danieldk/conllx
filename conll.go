@@ -140,7 +140,7 @@ func (t *Token) PHeadRel() (string, bool) {
 
 // SetFeatures sets the features for this token. The token itself is
 // returned to allow method chaining.
-func (t *Token) SetFeatures(features map[string]string) {
+func (t *Token) SetFeatures(features map[string]string) *Token {
 	f := new(Features)
 	f.featuresMap = features
 
@@ -153,6 +153,8 @@ func (t *Token) SetFeatures(features map[string]string) {
 
 	t.features = f
 	t.available |= featuresBit
+
+	return t
 }
 
 // SetForm sets the form for this token. The token itself is returned to
