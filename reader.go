@@ -88,6 +88,11 @@ func processToken(columns []string) (Token, error) {
 		return Token{}, err
 	}
 
+	var featuresField *Features
+	if featuresBit != 0 {
+		featuresField = newFeatures(features)
+	}
+
 	return Token{
 		available: formBit | lemmaBit | cTagBit | tagBit | featuresBit |
 			headBit | headRelBit | pHeadBit | pHeadRelBit,
@@ -95,7 +100,7 @@ func processToken(columns []string) (Token, error) {
 		lemma:        lemma,
 		coarsePosTag: cTag,
 		posTag:       tag,
-		features:     newFeatures(features),
+		features:     featuresField,
 		head:         head,
 		headRel:      headRel,
 		pHead:        pHead,
