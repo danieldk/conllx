@@ -75,6 +75,11 @@ type Token struct {
 	pHeadRel     string
 }
 
+// NewToken creates a new Token with all layers set to absent.
+func NewToken() *Token {
+	return &Token{}
+}
+
 // Form returns the form (the actual token), the second tuple element is
 // false when there is no form stored in this token.
 func (t *Token) Form() (string, bool) {
