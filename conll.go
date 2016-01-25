@@ -1,7 +1,3 @@
-// The conllx package provides a reader (and soon writer)
-// for the CoNNL-X format:
-//
-// http://ilk.uvt.nl/conll/
 package conllx
 
 import (
@@ -37,14 +33,14 @@ func newFeatures(featuresString string) *Features {
 	}
 }
 
-// Get the features as a string. This will give feature in
-// exactly the same format as the original CONLL-X data.
+// FeaturesString returns the token features as a string. This will give
+// feature in exactly the same format as the original CONLL-X data.
 func (f *Features) FeaturesString() string {
 	return f.featuresString
 }
 
-// Get the features as a key-value mapping. Features that do
-// not follow the expected format are skipped.
+// FeaturesMap returns the token features as a key-value mapping. Features
+// that do not follow the expected format are skipped.
 //
 // The feature map is lazily initialized on its first call. No
 // feature field parsing is done if this method is not called.
@@ -61,7 +57,7 @@ func (f *Features) FeaturesMap() map[string]string {
 	return f.featuresMap
 }
 
-// A CONLL-X token
+// Token stores a token with the CONLL-X annotation layers.
 type Token struct {
 	available    fields
 	form         string
@@ -75,61 +71,66 @@ type Token struct {
 	pHeadRel     string
 }
 
-// Get the form, the second tuple element is false if there
-// is no form stored in this token.
+// Form returns the form (the actual token), the second tuple element is
+// false when there is no form stored in this token.
 func (t *Token) Form() (string, bool) {
 	return t.form, t.available&formBit != 0
 }
 
-// Get the lemma, the second tuple element is false if there
-// is no lemma stored in this token.
+// Lemma returns the lemma of the token, the second tuple element is false
+// when there is no lemma stored in this token.
 func (t *Token) Lemma() (string, bool) {
 	return t.lemma, t.available&lemmaBit != 0
 }
 
-// Get the coarse-grained POS tag, the second tuple element is
-// false if there is no coarse-grained tag stored in this token.
+// CoarsePosTag returns the coarse-grained POS tag of the token, the
+// second tuple element is false when there is no coarse-grained tag
+// stored in this token.
 func (t *Token) CoarsePosTag() (string, bool) {
 	return t.coarsePosTag, t.available&coarsePosTagBit != 0
 }
 
-// Get the fine-grained POS tag, the second tuple element is
-// false if there is no tag stored in this token.
+// PosTag returns the fine-grained POS tag of the token, the second
+// tuple element is false when there is no fine-grained tag stored in
+// this token.
 func (t *Token) PosTag() (string, bool) {
 	return t.posTag, t.available&posTagBit != 0
 }
 
-// Get the features field, the second tuple element is
-// false if there are no features stored in this token.
+// Features returns the features field, the second tuple element is false
+// when there are no features stored in this token.
 func (t *Token) Features() (*Features, bool) {
 	return t.features, t.available&featuresBit != 0
 }
 
-// Get the head field, the second tuple element is
-// false if there is no head stored in this token.
+// Head returns the head of the token, the second tuple element is false
+// when there is no head stored in this token.
 func (t *Token) Head() (uint, bool) {
 	return t.head, t.available&headBit != 0
 }
 
-// Get the head relation, the second tuple element is
-// false if there is no head relation stored in this token.
+// HeadRel returns the relation of the token to its head, the second
+// tuple element is false when there is no head relation stored in this
+// token.
 func (t *Token) HeadRel() (string, bool) {
 	return t.headRel, t.available&headRelBit != 0
 }
 
-// Get the projective head field, the second tuple element is
-// false if there is no projective head stored in this token.
+// PHead returns the projective head of the token, the second tuple
+// element is false when there is no head stored in this token.
 func (t *Token) PHead() (uint, bool) {
 	return t.pHead, t.available&pHeadBit != 0
 }
 
-// Get the head relation, the second tuple element is
-// false if there is no head relation stored in this token.
+// PHeadRel returns the relation of the token to its projective head, the
+// second tuple element is false when there is no head relation stored in
+// this token.
 func (t *Token) PHeadRel() (string, bool) {
 	return t.pHeadRel, t.available&pHeadRelBit != 0
 }
 
-// Set the features for this token.
+// SetFeatures sets the features for this token. The token itself is
+// returned to allow method chaining.
 func (t *Token) SetFeatures(features map[string]string) {
 	f := new(Features)
 	f.featuresMap = features
@@ -145,56 +146,64 @@ func (t *Token) SetFeatures(features map[string]string) {
 	t.available |= featuresBit
 }
 
-// Set the form field.
+// SetForm sets the form for this token. The token itself is returned to
+// allow method chaining.
 func (t *Token) SetForm(form string) *Token {
 	t.form = form
 	t.available |= formBit
 	return t
 }
 
-// Set the lemma field.
+// SetLemma sets the lemma for this token. The token itself is returned to
+// allow method chaining.
 func (t *Token) SetLemma(lemma string) *Token {
 	t.lemma = lemma
 	t.available |= lemmaBit
 	return t
 }
 
-// Set the coarse-grained POS tag field.
+// SetCoarsePosTag sets the coarse-grained POS tag for this token. The
+// token itself is returned to allow method chaining.
 func (t *Token) SetCoarsePosTag(coarsePosTag string) *Token {
 	t.coarsePosTag = coarsePosTag
 	t.available |= coarsePosTagBit
 	return t
 }
 
-// Set the POS tag field.
+// SetPosTag sets the fine-grained POS tag for this token. The token
+// itself is returned to allow method chaining.
 func (t *Token) SetPosTag(posTag string) *Token {
 	t.posTag = posTag
 	t.available |= posTagBit
 	return t
 }
 
-// Set the head field.
+// SetHead sets the head of this token. The token itself is returned to
+// allow method chaining.
 func (t *Token) SetHead(head uint) *Token {
 	t.head = head
 	t.available |= headBit
 	return t
 }
 
-// Set the head relation.
+// SetHeadRel sets the relation to the head of this token. The token
+// itself is returned to allow method chaining.
 func (t *Token) SetHeadRel(rel string) *Token {
 	t.headRel = rel
 	t.available |= headRelBit
 	return t
 }
 
-// Set the projective head field.
+// SetPHead sets the projective head of this token. The token itself is
+// returned to allow method chaining.
 func (t *Token) SetPHead(head uint) *Token {
 	t.pHead = head
 	t.available |= pHeadBit
 	return t
 }
 
-// Set the projective head relation field.
+// SetPHeadRel sets the relation to the projective head of this token.
+// The token itself is returned to allow method chaining.
 func (t *Token) SetPHeadRel(rel string) *Token {
 	t.pHeadRel = rel
 	t.available |= pHeadRelBit

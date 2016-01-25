@@ -7,13 +7,14 @@ import (
 	"strings"
 )
 
-// A reader for CONLL-X files.
+// A Reader for CONLL-X files.
 type Reader struct {
 	scanner *bufio.Scanner
 	eof     bool
 }
 
-// Create a new reader from a buffered I/O reader.
+// NewReader creates a new CoNLL-X reader from a buffered I/O reader.
+// The caller is responsible for closing the provided reader.
 func NewReader(r *bufio.Reader) Reader {
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
@@ -23,10 +24,10 @@ func NewReader(r *bufio.Reader) Reader {
 	}
 }
 
-// Read a sentence from the reader. If there is no more
-// data that can be read, io.EOF is returned as the error.
+// ReadSentence returns the next sentence. If there is no more data
+// that can be read, io.EOF is returned as the error.
 func (r *Reader) ReadSentence() (sentence []Token, err error) {
-	tokens := make([]Token, 0)
+	var tokens []Token
 
 	if r.eof {
 		return nil, io.EOF

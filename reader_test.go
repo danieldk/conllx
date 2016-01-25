@@ -28,12 +28,12 @@ const testFragmentMarkedEmpty string = `1	Die	die	ART	ART	nsf	2	DET	_	_
 1	Gilles	Gilles	N	NE	nsm	0	ROOT	_	_
 2	Deleuze	Deleuze	N	NE	case:nominative|number:singular|gender:masculine	1	APP	_	_`
 
-var testFragmentSent1 []Token = []Token{
+var testFragmentSent1 = []Token{
 	{0x7F, "Die", "die", "ART", "ART", &Features{"nsf", nil}, 2, "DET", 0, ""},
 	{0x7F, "Großaufnahme", "Großaufnahme", "N", "NN", &Features{"nsf", nil}, 0, "ROOT", 0, ""},
 }
 
-var testFragmentSent2 []Token = []Token{
+var testFragmentSent2 = []Token{
 	{0x7F, "Gilles", "Gilles", "N", "NE", &Features{"nsm", nil}, 0, "ROOT", 0, ""},
 	{0x7F, "Deleuze", "Deleuze", "N", "NE", &Features{"case:nominative|number:singular|gender:masculine", nil}, 1, "APP", 0, ""},
 }
@@ -44,7 +44,7 @@ var token2Features = map[string]string{
 	"gender": "masculine",
 }
 
-var testFragmentSent2Features []Token = []Token{
+var testFragmentSent2Features = []Token{
 	{0x7F, "Gilles", "Gilles", "N", "NE", &Features{"nsm", nil}, 0, "ROOT", 0, ""},
 	{0x7F, "Deleuze", "Deleuze", "N", "NE", &Features{"case:nominative|number:singular|gender:masculine", token2Features}, 1, "APP", 0, ""},
 }

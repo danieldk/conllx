@@ -7,12 +7,13 @@ import (
 	"strings"
 )
 
+// Writer writes sentences in CoNLL-X format.
 type Writer struct {
 	first  bool
 	writer io.Writer
 }
 
-// Create a new writer.
+// NewWriter creates a new writer.
 func NewWriter(w io.Writer) Writer {
 	return Writer{
 		first:  true,
@@ -20,6 +21,8 @@ func NewWriter(w io.Writer) Writer {
 	}
 }
 
+// WriteSentence writes a sentences in CoNLL-X format. For annotation layers
+// that are absent in a token underscores (_) are written.
 func (w *Writer) WriteSentence(sentence []Token) error {
 	// Sentences are split using an extra newline. Moreover, there shouldn't
 	// be a newline after the last token of the stream. So, we always print
@@ -68,23 +71,23 @@ type conllxGetFeatures func() (*Features, bool)
 func (w Writer) formatColumn(getter conllxGet) string {
 	if value, ok := getter(); ok {
 		return value
-	} else {
-		return "_"
 	}
+
+	return "_"
 }
 
 func (w Writer) formatIntColumn(getter conllxGetInt) string {
 	if value, ok := getter(); ok {
 		return strconv.FormatUint(uint64(value), 10)
-	} else {
-		return "_"
 	}
+
+	return "_"
 }
 
 func (w Writer) formatFeaturesColumn(getter conllxGetFeatures) string {
 	if value, ok := getter(); ok {
 		return value.FeaturesString()
-	} else {
-		return "_"
 	}
+
+	return "_"
 }
