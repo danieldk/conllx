@@ -70,6 +70,11 @@ func (r *Reader) ReadSentence() (sentence []Token, err error) {
 }
 
 func processToken(columns []string) (Token, error) {
+	_, _, err := intValueForColumn(columns, 0)
+	if err != nil {
+		return Token{}, err
+	}
+
 	form, formBit := valueForColumn(columns, 1)
 	lemma, lemmaBit := valueForColumn(columns, 2)
 	cTag, cTagBit := valueForColumn(columns, 3)

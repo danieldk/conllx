@@ -109,6 +109,23 @@ func TestEmpty(t *testing.T) {
 	}
 }
 
+func TestUnparsableField(t *testing.T) {
+	r := stringReader("test")
+	if _, err := r.ReadSentence(); err == nil || err == io.EOF {
+		t.Fatal("Parsing a non-numeric value as the token id should fail.")
+	}
+
+	r = stringReader("1	_	_	_	_	_	foo")
+	if _, err := r.ReadSentence(); err == nil || err == io.EOF {
+		t.Fatal("Parsing a non-numeric value as the head should fail.")
+	}
+
+	r = stringReader("1	_	_	_	_	_	_	_	foo")
+	if _, err := r.ReadSentence(); err == nil || err == io.EOF {
+		t.Fatal("Parsing a non-numeric value as the head should fail.")
+	}
+}
+
 func stringReader(s string) Reader {
 	reader := strings.NewReader(s)
 	return NewReader(bufio.NewReader(reader))
