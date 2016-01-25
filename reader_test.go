@@ -53,7 +53,11 @@ var testFragmentSent2Features = []Token{
 	{0x7F, "Deleuze", "Deleuze", "N", "NE", &Features{"case:nominative|number:singular|gender:masculine", token2Features}, 1, "APP", 0, ""},
 }
 
-func equalOrFail(t *testing.T, correct, test []Token) {
+func equalOrFail(t *testing.T, err error, correct, test []Token) {
+	if err != nil {
+		t.Fatalf("Sentence read should succeed: %s", err)
+	}
+
 	if !reflect.DeepEqual(correct, test) {
 		t.Fatalf("Parsing error:\nCorrect: %v\nGot: %v", correct, test)
 	}
@@ -63,25 +67,17 @@ func testHelper(t *testing.T, sentenceString string) {
 	r := stringReader(sentenceString)
 
 	sentence, err := r.ReadSentence()
-	if err != nil {
-		t.Fatalf("Sentence read should succeed: %s", err)
-	}
-
-	equalOrFail(t, testFragmentSent1, sentence)
+	equalOrFail(t, err, testFragmentSent1, sentence)
 
 	sentence2, err := r.ReadSentence()
-	if err != nil {
-		t.Fatalf("Sentence read should succeed: %s", err)
-	}
-
-	equalOrFail(t, testFragmentSent2, sentence2)
+	equalOrFail(t, err, testFragmentSent2, sentence2)
 
 	features, ok := sentence2[1].Features()
 	if !ok {
 		t.Fatalf("Sentence should have features.")
 	}
 	features.FeaturesMap()
-	equalOrFail(t, testFragmentSent2Features, sentence2)
+	equalOrFail(t, nil, testFragmentSent2Features, sentence2)
 
 	_, err = r.ReadSentence()
 	if err != io.EOF {
