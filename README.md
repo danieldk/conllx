@@ -1,6 +1,7 @@
 ## Introduction
 
 [![GoDoc](https://godoc.org/github.com/danieldk/conllx?status.svg)](https://godoc.org/github.com/danieldk/conllx)
+[![Report card](http://goreportcard.com/badge/danieldk/conllx)](http://goreportcard.com/report/danieldk/conllx)
 
 This is a package for reading and writing CONLL-X files in Go.
 
