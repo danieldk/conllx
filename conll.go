@@ -275,6 +275,7 @@ func stringForUintField(f func() (uint, bool)) string {
 
 var _ fmt.Stringer = Sentence{}
 
+// A Sentence is a slice of Tokens.
 type Sentence []Token
 
 func (s Sentence) String() string {
