@@ -27,7 +27,7 @@ func NewWriter(w io.Writer) Writer {
 
 // WriteSentence writes a sentences in CoNLL-X format. For annotation layers
 // that are absent in a token underscores (_) are written.
-func (w *Writer) WriteSentence(sentence []Token) error {
+func (w *Writer) WriteSentence(sentence Sentence) error {
 	// Sentences are split using an extra newline. Moreover, there shouldn't
 	// be a newline after the last token of the stream. So, we always print
 	// the last token of the sentence without a newline and print two newlines

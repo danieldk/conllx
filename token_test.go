@@ -1,6 +1,9 @@
 package conllx
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 var stringerTestToken = NewToken().
 	SetForm("Test").
@@ -16,7 +19,7 @@ var stringerTestToken = NewToken().
 var stringerTestCheck = "Test	test	N	NN	pos:N	0	ROOT	2	PROOT"
 var stringerEmptyCheck = "_	_	_	_	_	_	_	_	_"
 
-func TestToken(t *testing.T) {
+func TestTokenStringer(t *testing.T) {
 	if stringerTestToken.String() != stringerTestCheck {
 		t.Fatalf("Stringer error. Expected:\n%s\nGot\n%s", stringerTestCheck, stringerTestToken.String())
 	}
@@ -24,5 +27,15 @@ func TestToken(t *testing.T) {
 	emptyToken := NewToken()
 	if emptyToken.String() != stringerEmptyCheck {
 		t.Fatalf("Stringer error. Expected:\n%s\nGot\n%s", stringerEmptyCheck, emptyToken.String())
+	}
+}
+
+var sentenceStringerTestCheck = fmt.Sprintf("1\t%s\n2\t%s", stringerTestCheck, stringerTestCheck)
+
+var stringerTestSentence = Sentence{*stringerTestToken, *stringerTestToken}
+
+func TestSentenceStringer(t *testing.T) {
+	if stringerTestSentence.String() != sentenceStringerTestCheck {
+		t.Fatalf("Stringer error. Expected:\n%s\nGot\n%s", stringerTestCheck, stringerTestToken.String())
 	}
 }

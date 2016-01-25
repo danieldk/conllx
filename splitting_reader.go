@@ -39,7 +39,7 @@ func NewSplittingReader(reader Reader, nFolds int, folds FoldSet) (*SplittingRea
 
 // ReadSentence returns the next sentence that is in one of the folds
 // requested from the SplittingReader.
-func (r *SplittingReader) ReadSentence() (sentence []Token, err error) {
+func (r *SplittingReader) ReadSentence() (sentence Sentence, err error) {
 	for {
 		sentence, err := r.reader.ReadSentence()
 		if err == io.EOF {

@@ -272,3 +272,26 @@ func stringForUintField(f func() (uint, bool)) string {
 
 	return "_"
 }
+
+var _ fmt.Stringer = Sentence{}
+
+type Sentence []Token
+
+func (s Sentence) String() string {
+	var buf bytes.Buffer
+
+	for idx, token := range s {
+		// Write the token identifier.
+		buf.WriteString(strconv.FormatInt(int64(idx+1), 10))
+		buf.WriteRune('\t')
+
+		buf.WriteString(token.String())
+
+		// Append a newline, unless we are at the last token.
+		if idx != len(s)-1 {
+			buf.WriteRune('\n')
+		}
+	}
+
+	return buf.String()
+}

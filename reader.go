@@ -30,8 +30,8 @@ func NewReader(r *bufio.Reader) Reader {
 
 // ReadSentence returns the next sentence. If there is no more data
 // that can be read, io.EOF is returned as the error.
-func (r *Reader) ReadSentence() (sentence []Token, err error) {
-	var tokens []Token
+func (r *Reader) ReadSentence() (sentence Sentence, err error) {
+	var tokens Sentence
 
 	if r.eof {
 		return nil, io.EOF
