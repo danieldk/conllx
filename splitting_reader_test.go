@@ -47,7 +47,7 @@ type splittingTestCase struct {
 }
 
 var splittingTestCases = []splittingTestCase{
-	splittingTestCase{
+	{
 		nFolds: 2,
 		folds:  map[int]interface{}{0: nil},
 		expected: [][]Token{
@@ -56,7 +56,7 @@ var splittingTestCases = []splittingTestCase{
 			splitTestSent4,
 		},
 	},
-	splittingTestCase{
+	{
 		nFolds: 3,
 		folds:  map[int]interface{}{0: nil, 2: nil},
 		expected: [][]Token{
