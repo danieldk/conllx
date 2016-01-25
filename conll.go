@@ -5,7 +5,9 @@
 package conllx
 
 import (
+	"bytes"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -60,6 +62,8 @@ func (f *Features) FeaturesMap() map[string]string {
 
 	return f.featuresMap
 }
+
+var _ fmt.Stringer = Token{}
 
 // Token stores a token with the CONLL-X annotation layers.
 type Token struct {
@@ -219,4 +223,52 @@ func (t *Token) SetPHeadRel(rel string) *Token {
 	t.pHeadRel = rel
 	t.available |= pHeadRelBit
 	return t
+}
+
+func (t Token) String() string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(stringForField(t.Form))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForField(t.Lemma))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForField(t.CoarsePosTag))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForField(t.PosTag))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForFeatures(t.Features))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForUintField(t.Head))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForField(t.HeadRel))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForUintField(t.PHead))
+	buffer.WriteRune('\t')
+	buffer.WriteString(stringForField(t.PHeadRel))
+
+	return buffer.String()
+}
+
+func stringForField(f func() (string, bool)) string {
+	if v, ok := f(); ok {
+		return v
+	}
+
+	return "_"
+}
+
+func stringForFeatures(f func() (*Features, bool)) string {
+	if v, ok := f(); ok {
+		return v.FeaturesString()
+	}
+
+	return "_"
+}
+
+func stringForUintField(f func() (uint, bool)) string {
+	if v, ok := f(); ok {
+		return strconv.FormatUint(uint64(v), 10)
+	}
+
+	return "_"
 }
