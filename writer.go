@@ -43,16 +43,16 @@ func (w *Writer) WriteSentence(sentence Sentence) error {
 
 	for idx, token := range sentence {
 		if idx == sentenceLen-1 {
-			fmt.Fprintf(w.writer, "%d\t%s", idx+1, w.formatToken(token))
+			fmt.Fprintf(w.writer, "%d\t%s", idx+1, w.formatToken(&token))
 		} else {
-			fmt.Fprintf(w.writer, "%d\t%s\n", idx+1, w.formatToken(token))
+			fmt.Fprintf(w.writer, "%d\t%s\n", idx+1, w.formatToken(&token))
 		}
 	}
 
 	return nil
 }
 
-func (w Writer) formatToken(token Token) string {
+func (w Writer) formatToken(token *Token) string {
 	cols := []string{
 		w.formatColumn(token.Form),
 		w.formatColumn(token.Lemma),
