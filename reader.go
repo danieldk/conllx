@@ -28,6 +28,28 @@ func NewReader(r *bufio.Reader) Reader {
 	}
 }
 
+func parseColumns(line string) ([10]string, int) {
+	var columns [10]string
+
+	for i := 0; i < 10; i++ {
+		end := strings.IndexRune(line, '\t')
+
+		if end == -1 {
+			if len(line) == 0 {
+				return columns, i
+			} else {
+				columns[i] = line
+				return columns, i + 1
+			}
+		}
+
+		columns[i] = line[:end]
+		line = line[end+1:]
+	}
+
+	return columns, 10
+}
+
 // ReadSentence returns the next sentence. If there is no more data
 // that can be read, io.EOF is returned as the error.
 func (r *Reader) ReadSentence() (sentence Sentence, err error) {
@@ -49,8 +71,9 @@ func (r *Reader) ReadSentence() (sentence Sentence, err error) {
 			break
 		}
 
-		parts := strings.Split(line, "\t")
-		token, err := processToken(parts)
+		parts, partsLen := parseColumns(line)
+
+		token, err := processToken(parts[:partsLen])
 		if err != nil {
 			return nil, err
 		}
