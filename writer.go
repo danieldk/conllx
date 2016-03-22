@@ -18,8 +18,8 @@ type Writer struct {
 }
 
 // NewWriter creates a new writer.
-func NewWriter(w io.Writer) Writer {
-	return Writer{
+func NewWriter(w io.Writer) *Writer {
+	return &Writer{
 		first:  true,
 		writer: w,
 	}
