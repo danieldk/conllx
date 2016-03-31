@@ -15,6 +15,7 @@ import (
 type Reader struct {
 	scanner *bufio.Scanner
 	eof     bool
+	tokens  Sentence
 }
 
 // NewReader creates a new CoNLL-X reader from a buffered I/O reader.
@@ -52,8 +53,12 @@ func parseColumns(line string) ([10]string, int) {
 
 // ReadSentence returns the next sentence. If there is no more data
 // that can be read, io.EOF is returned as the error.
+//
+// The returned Sentence slice is only valid until the next call of
+// ReadSentence. If you need to retain a sentence accross calls,
+// it is safe to make a copy.
 func (r *Reader) ReadSentence() (sentence Sentence, err error) {
-	var tokens Sentence
+	r.tokens = r.tokens[:0]
 
 	if r.eof {
 		return nil, io.EOF
@@ -64,7 +69,7 @@ func (r *Reader) ReadSentence() (sentence Sentence, err error) {
 		line = strings.TrimSpace(line)
 
 		if len(line) == 0 {
-			if len(tokens) == 0 {
+			if len(r.tokens) == 0 {
 				continue
 			}
 
@@ -78,18 +83,18 @@ func (r *Reader) ReadSentence() (sentence Sentence, err error) {
 			return nil, err
 		}
 
-		tokens = append(tokens, token)
+		r.tokens = append(r.tokens, token)
 	}
 
 	if r.scanner.Err() == io.EOF {
 		r.eof = true
 	}
 
-	if len(tokens) == 0 {
+	if len(r.tokens) == 0 {
 		return nil, io.EOF
 	}
 
-	return tokens, nil
+	return r.tokens, nil
 }
 
 func processToken(columns []string) (Token, error) {

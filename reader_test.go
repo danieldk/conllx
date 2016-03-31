@@ -12,6 +12,25 @@ import (
 	"testing"
 )
 
+const longShortFragment string = `1	A
+2	B
+3	C
+
+1	X
+2	Y
+`
+
+var longShortSentence1 = []Token{
+	*NewToken().SetForm("A"),
+	*NewToken().SetForm("B"),
+	*NewToken().SetForm("C"),
+}
+
+var longShortSentence2 = []Token{
+	*NewToken().SetForm("X"),
+	*NewToken().SetForm("Y"),
+}
+
 const testFragment string = `1	Die	die	ART	ART	nsf	2	DET
 2	Großaufnahme	Großaufnahme	N	NN	nsf	0	ROOT
 
@@ -63,6 +82,16 @@ func equalOrFail(t *testing.T, err error, correct, test []Token) {
 	}
 }
 
+func notEqualOrFail(t *testing.T, err error, correct, test []Token) {
+	if err != nil {
+		t.Fatalf("Sentence read should succeed: %s", err)
+	}
+
+	if reflect.DeepEqual(correct, test) {
+		t.Fatalf("Parsing error:\nSentences are equal: %v", test)
+	}
+}
+
 func testHelper(t *testing.T, sentenceString string) {
 	r := stringReader(sentenceString)
 
@@ -83,6 +112,24 @@ func testHelper(t *testing.T, sentenceString string) {
 	if err != io.EOF {
 		t.Fatalf("Reader should return EOF.")
 	}
+}
+
+func TestCopySafe(t *testing.T) {
+	r := stringReader(longShortFragment)
+	s1, err := r.ReadSentence()
+	equalOrFail(t, err, longShortSentence1, s1)
+
+	s1Copy := make([]Token, len(s1))
+	copy(s1Copy, s1)
+
+	s2, err := r.ReadSentence()
+	equalOrFail(t, err, longShortSentence2, s2)
+
+	// s1 should be invalid, since the slice is recycled
+	notEqualOrFail(t, nil, longShortSentence1, s1)
+
+	// However, the copy of s1 should be valid
+	equalOrFail(t, nil, longShortSentence1, s1Copy)
 }
 
 func TestCorrect(t *testing.T) {
