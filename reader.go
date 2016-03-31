@@ -32,7 +32,7 @@ func parseColumns(line string) ([10]string, int) {
 	var columns [10]string
 
 	for i := 0; i < 10; i++ {
-		end := strings.IndexRune(line, '\t')
+		end := strings.IndexByte(line, byte('\t'))
 
 		if end == -1 {
 			if len(line) == 0 {
