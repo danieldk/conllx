@@ -16,7 +16,7 @@ type FoldSet map[int]interface{}
 // SplittingReader is a wrapper around a (CoNLL-X) Reader that splits the
 // corpus into folds.
 type SplittingReader struct {
-	reader Reader
+	reader *Reader
 	nFolds int
 	folds  FoldSet
 	count  int
@@ -24,7 +24,7 @@ type SplittingReader struct {
 
 // NewSplittingReader creates a SplittingReader, that splits the data in
 // 'nFolds' folds. The reader returns the sentences that are in 'folds'.
-func NewSplittingReader(reader Reader, nFolds int, folds FoldSet) (*SplittingReader, error) {
+func NewSplittingReader(reader *Reader, nFolds int, folds FoldSet) (*SplittingReader, error) {
 	if nFolds < 1 {
 		return nil, errors.New("The data should be 'splitted' in at least 1 fold.")
 	}

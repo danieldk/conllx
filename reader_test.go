@@ -173,7 +173,7 @@ func TestUnparsableField(t *testing.T) {
 	}
 }
 
-func stringReader(s string) Reader {
+func stringReader(s string) *Reader {
 	reader := strings.NewReader(s)
 	return NewReader(bufio.NewReader(reader))
 }

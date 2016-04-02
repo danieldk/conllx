@@ -20,10 +20,10 @@ type Reader struct {
 
 // NewReader creates a new CoNLL-X reader from a buffered I/O reader.
 // The caller is responsible for closing the provided reader.
-func NewReader(r *bufio.Reader) Reader {
+func NewReader(r *bufio.Reader) *Reader {
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
-	return Reader{
+	return &Reader{
 		scanner: scanner,
 		eof:     false,
 	}
