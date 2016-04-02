@@ -45,10 +45,10 @@ func parseColumns(line string) ([10]string, int) {
 		if end == -1 {
 			if len(line) == 0 {
 				return columns, i
-			} else {
-				columns[i] = line
-				return columns, i + 1
 			}
+
+			columns[i] = line
+			return columns, i + 1
 		}
 
 		columns[i] = line[:end]
