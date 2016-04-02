@@ -1,4 +1,4 @@
-// Copyright 2015 The conllx Authors. All rights reserved.
+// Copyright 2015, 2016 The conllx Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -10,6 +10,13 @@ import (
 	"strconv"
 	"strings"
 )
+
+// A SentenceReader reads CoNLL-X sentences.
+type SentenceReader interface {
+	ReadSentence() (sentence Sentence, err error)
+}
+
+var _ SentenceReader = &Reader{}
 
 // A Reader for CONLL-X files.
 type Reader struct {

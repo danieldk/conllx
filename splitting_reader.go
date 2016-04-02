@@ -13,6 +13,8 @@ import (
 // to indicate from which folds sentences should be returned.
 type FoldSet map[int]interface{}
 
+var _ SentenceReader = &SplittingReader{}
+
 // SplittingReader is a wrapper around a (CoNLL-X) Reader that splits the
 // corpus into folds.
 type SplittingReader struct {
