@@ -80,6 +80,11 @@ type Token struct {
 }
 
 // NewToken creates a new Token with all layers set to absent.
+//
+// Note that although the Sentence type used by readers and writers
+// is a slice of Token as a value type, this constructor returns a
+// pointer. This is intentional: the token constructor returns a
+// pointer to permit token construction via the builder pattern.
 func NewToken() *Token {
 	return &Token{}
 }
