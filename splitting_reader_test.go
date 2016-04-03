@@ -98,3 +98,11 @@ func TestSplittingNoFolds(t *testing.T) {
 		t.Fatal("expected immediate EOF when reading no folds")
 	}
 }
+
+func TestSplittingNoSplitting(t *testing.T) {
+	folds := map[int]interface{}{1: nil}
+	_, err := NewSplittingReader(stringReader(splitTestFragment), 0, folds)
+	if err == nil {
+		t.Fatal("expected error when splitting in fewer than 1 fold")
+	}
+}
