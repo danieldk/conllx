@@ -93,11 +93,12 @@ func (r *Reader) ReadSentence() (sentence Sentence, err error) {
 		r.tokens = append(r.tokens, token)
 	}
 
-	if r.scanner.Err() == io.EOF {
-		r.eof = true
+	if r.scanner.Err() != nil {
+		return nil, r.scanner.Err()
 	}
 
 	if len(r.tokens) == 0 {
+		r.eof = true
 		return nil, io.EOF
 	}
 

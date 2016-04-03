@@ -156,6 +156,17 @@ func TestEmpty(t *testing.T) {
 	}
 }
 
+func TestEOF(t *testing.T) {
+	r := stringReader("")
+	if _, err := r.ReadSentence(); err != io.EOF {
+		t.Fatal("EOF should be reached")
+	}
+
+	if _, err := r.ReadSentence(); err != io.EOF {
+		t.Fatal("reading from an EOF reader should return EOF")
+	}
+}
+
 func TestUnparsableField(t *testing.T) {
 	r := stringReader("test")
 	if _, err := r.ReadSentence(); err == nil || err == io.EOF {
