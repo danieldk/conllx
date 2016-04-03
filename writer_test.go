@@ -6,6 +6,7 @@ package conllx
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 )
 
@@ -35,4 +36,26 @@ func writerTestHelper(t *testing.T, sentences [][]Token) {
 	if buffer.String() != testFragmentExplicit {
 		t.Fatalf("Got:\n%sExpected:\n%s\n", buffer.String(), testFragmentExplicit)
 	}
+}
+
+func ExampleWriter() {
+	var buf bytes.Buffer
+	writer := NewWriter(&buf)
+	writer.WriteSentence(
+		Sentence{
+			*NewToken().SetForm("Hello").SetPosTag("expr"),
+			*NewToken().SetForm("world").SetPosTag("noun")})
+	writer.WriteSentence(
+		Sentence{
+			*NewToken().SetForm("Go").SetPosTag("name"),
+			*NewToken().SetForm("rocks").SetPosTag("verb")})
+
+	fmt.Println(buf.String())
+
+	// Output:
+	// 1	Hello	_	_	expr	_	_	_	_	_
+	// 2	world	_	_	noun	_	_	_	_	_
+	//
+	// 1	Go	_	_	name	_	_	_	_	_
+	// 2	rocks	_	_	verb	_	_	_	_	_
 }
