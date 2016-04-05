@@ -4,10 +4,7 @@
 
 package conllx
 
-import (
-	"errors"
-	"io"
-)
+import "errors"
 
 // A FoldSet contains fold numbers. This type is used with a SplittingReader
 // to indicate from which folds sentences should be returned.
@@ -44,7 +41,7 @@ func NewSplittingReader(reader *Reader, nFolds int, folds FoldSet) (*SplittingRe
 func (r *SplittingReader) ReadSentence() (sentence Sentence, err error) {
 	for {
 		sentence, err := r.reader.ReadSentence()
-		if err == io.EOF {
+		if err != nil {
 			return sentence, err
 		}
 
